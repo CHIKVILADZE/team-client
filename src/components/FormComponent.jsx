@@ -78,7 +78,7 @@ function FormComponent() {
                 errors.number ? 'is-invalid' : ''
               }`}
               placeholder="Enter a number"
-              {...register('number', { pattern: /^d{2}-d{2}-d{2}$/ })}
+              {...register('number', { pattern: /^\d{2}-\d{2}-\d{2}$/ })}
               style={{ width: '300px' }}
             />
             {errors.number && (
