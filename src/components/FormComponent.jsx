@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
@@ -16,41 +16,33 @@ function FormComponent() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const cancelRequest = useRef(null);
 
   const onSubmit = (data) => {
     setLoading(true);
-    setErrorMessage('');
 
-    if (cancelRequest.current) {
-      cancelRequest.current.cancel('Operation canceled by the user.');
-    }
+    const requestData = {
+      email: data.email,
+      ...(data.number && { number: data.number }),
+    };
 
-    cancelRequest.current = axios.CancelToken.source();
-
-    axios
-      .get(`https://team-server-0oy2.onrender.com/search`, {
-        params: {
-          email: data.email,
-          ...(data.number && { number: data.number }),
-        },
-        cancelToken: cancelRequest.current.token,
-      })
-      .then((response) => {
-        console.log('GET request response:', response.data);
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        if (axios.isCancel(error)) {
-          console.log('Request canceled', error.message);
-        } else {
+    setTimeout(() => {
+      axios
+        .get(`https://team-server-0oy2.onrender.com/search`, {
+          params: requestData,
+        })
+        .then((response) => {
+          console.log('GET request response:', response.data);
+          setUsers(response.data);
+          setErrorMessage('');
+        })
+        .catch((error) => {
           console.error('Error making GET request:', error.response.data.error);
           setErrorMessage(error.response.data.error);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 5000);
   };
 
   return (
