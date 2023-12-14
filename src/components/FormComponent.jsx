@@ -31,12 +31,10 @@ function FormComponent() {
           params: requestData,
         })
         .then((response) => {
-          console.log('GET request response:', response.data);
           setUsers(response.data);
           setErrorMessage('');
         })
         .catch((error) => {
-          console.error('Error making GET request:', error.response.data.error);
           setErrorMessage(error.response.data.error);
         })
         .finally(() => {
